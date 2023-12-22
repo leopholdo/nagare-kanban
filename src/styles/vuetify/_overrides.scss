@@ -1,0 +1,21 @@
+.v-card-title {
+  font-size: 1rem !important;
+}
+
+.v-card {
+  border-radius: 10px !important;
+}
+
+.v-btn {
+  text-transform: none !important;
+}
+
+.v-input input, 
+.v-input textarea {
+  font-size: 0.9rem !important;
+}
+
+.v-overlay__scrim {
+  background: rgba(#000, 0.5) !important;
+  opacity: 1 !important;
+}
