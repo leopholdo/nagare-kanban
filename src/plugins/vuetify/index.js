@@ -27,6 +27,10 @@ export default createVuetify({
           primary: '#1867C0',
           secondary: '#5CBBF6',
         },
+        variables: {
+          "theme-background": '#373538',
+          "theme-surface": '#4C4A4D'
+        }
       },
     },
   },

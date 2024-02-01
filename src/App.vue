@@ -23,14 +23,17 @@
     border-radius: 5px;
   }
 
-  .btn-icon {
+  .action-hover {
     transition: color 0.1s ease-in-out;
+    cursor: pointer;
   }
-  .btn-icon:hover {
-    color: #1867C0;
+  .action-hover:hover {
+    color: #1FAEFF;
   }
 
-  /* .w-100 {
-    width: 100%;
-  } */
+  .flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 </style>

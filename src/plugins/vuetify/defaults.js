@@ -15,8 +15,9 @@ export default {
   },
   VTextField: {
     density: 'comfortable',
-    hideDetails: 'auto' 
-  }
+    hideDetails: 'auto',
+    rounded: 'lg'
+  },
   // MenuBtn: {
   //   icon: 'mdi-menu',
   //   size: 'large',

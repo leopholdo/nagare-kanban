@@ -18,6 +18,17 @@ const routes = [
       },
     ],
   },
+  {
+    path: '/auth',
+    component: () => import('@/layout/Auth.vue'),
+    children: [
+      {
+        path: '',
+        name: 'Auth',
+        component: () => import('@/views/auth/Auth.vue'),
+      },
+    ],
+  },
 ]
 
 const router = createRouter({
