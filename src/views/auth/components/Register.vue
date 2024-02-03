@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="step < 3">
     <div class="d-flex text-body-1 align-center mb-5">
       <v-icon 
         size="2rem" 
@@ -19,6 +19,17 @@
       </div>
     </div>
 
+    <v-scroll-y-transition>
+      <v-alert
+        v-if="errorMessage"
+        color="error"
+        icon="$info"
+        variant="tonal"
+        class="mb-8"
+        :text="errorMessage"
+      ></v-alert>
+    </v-scroll-y-transition>
+
     <v-form 
       v-if="step === 0"
       ref="formEmail" 
@@ -37,7 +48,8 @@
         class="mt-8"
         size="large"
         color="primary"
-        type="submit">
+        type="submit"
+        :loading="isLoading.checkUserBtn">
         Avançar
       </v-btn>
     </v-form>
@@ -92,10 +104,12 @@
       ref="formName" 
       @submit.prevent="onRegister">
       <v-text-field
+        counter
         variant="solo-filled"
         label="Nome"
         density="default"
-        :rules="[required]"
+        maxlength="40"
+        :rules="[required, nameLengthValidation]"
         v-model="name"
       ></v-text-field>
       
@@ -127,10 +141,28 @@
       </a>
     </div>
   </div>
+
+  <div v-else class="flex-center flex-column">
+    <v-icon size="2.5rem" color="#2895ff">
+      mdi-check-circle-outline
+    </v-icon>
+
+    <h2 class="mt-4">
+      Registro realizado com sucesso!
+    </h2>
+
+    <p class="text-body-1 mt-2">
+      Aguarde enquanto redirecionamos você
+    </p>
+  </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+
+import { useCallerStore } from '@/store/caller';
+import { useAuthStore } from '@/store/auth';
 
 import { 
   required, 
@@ -140,6 +172,9 @@ import {
 const emits = defineEmits([
   'onBack'
 ]);
+
+const callerStore = useCallerStore();
+const router = useRouter();
 
 const formEmail = ref();
 const formPassword = ref();
@@ -151,12 +186,18 @@ const isLoading = ref({
   finishBtn: false
 });
 
+const errorMessage = ref("");
+
 const showPassword = ref(false);
 const passwordStrength = ref([]);
 
 const email = ref("");
 const password = ref("");
 const name = ref("");
+
+const nameLengthValidation = (v) => {
+  return v.length <= 40 || 'O nome não deve exceder 40 caracteres.'
+}
 
 const stepNumber = computed(() => {
   return `Etapa ${step.value + 1} de 3`
@@ -208,7 +249,33 @@ async function onNextEmail() {
 
   isLoading.value.checkUserBtn = true
 
-  step.value++
+  callerStore.fetchData({
+    url: `Auth/UserExists?email=${email.value}`
+  }).then((response) => {
+    if(!callerStore.hasError && !response) {
+      isLoading.value.checkUserBtn = false
+      step.value++
+
+      return
+    } 
+    else {
+      if(callerStore.hasError) {
+        errorMessage.value = 'Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.'
+      }
+      else {
+        errorMessage.value = "Este endereço já está vinculado a uma conta existente. Pra continuar, faça login."
+      }
+
+      // When user inputs, clear error message
+      formEmail.value.$el.addEventListener('input', () => {
+        errorMessage.value = ""
+      }, { once: true })
+  
+      isLoading.value.checkUserBtn = false
+  
+      return
+    }
+  })
 }
 
 function passwordIsValid() {
@@ -233,6 +300,33 @@ async function onRegister() {
   const { valid } = await formName.value.validate();
   if(!valid) return;
 
-  
+  isLoading.value.finishBtn = true
+
+  await callerStore.fetchData({
+    method: 'post',
+    url: 'Auth/Register',
+    data: {
+      email: email.value,
+      password: password.value,
+      name: name.value
+    }
+  })
+
+  if(callerStore.hasError) return
+
+  const { login } = useAuthStore();
+
+  await login(email.value, password.value)
+
+  if(callerStore.hasError) return
+
+  step.value = 3
+
+  setTimeout(() => {
+    router.push({
+      name: 'Home'
+    })
+  }, 3000);
+
 }
 </script>

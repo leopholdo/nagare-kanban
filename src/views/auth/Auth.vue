@@ -26,7 +26,7 @@
       </defs>
       <g class="parallax">
         <use xlink:href="#gentle-wave" x="48" y="0" fill="rgba(255,255,255,0.7" />
-        <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(255,255,255,0.5)" />
+        <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(31, 174, 255, 0.3)" />
         <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(255,255,255,0.3)" />
         <use xlink:href="#gentle-wave" x="48" y="7" fill="#fff" />
       </g>
@@ -35,11 +35,11 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
+
 import Logo from '@/components/Logo.vue';
 import Login from './components/Login.vue';
 import Register from './components/Register.vue';
-
-import { ref } from 'vue';
 
 const showRegister = ref(false);
 </script>

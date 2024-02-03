@@ -1,10 +1,12 @@
 // Composables
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/store/auth'
 
 const routes = [
   {
-    path: '/',
+    path: '/board',
     component: () => import('@/layout/Default.vue'),
+    meta: { requiresAuth: true },
     children: [
       {
         path: '',
@@ -12,7 +14,7 @@ const routes = [
         component: () => import('@/views/home/Home.vue'),
       },
       {
-        path: '/:id',
+        path: '/board/:id',
         name: 'Board',
         component: () => import('@/views/board/Board.vue'),
       },
@@ -34,6 +36,16 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+})
+
+router.beforeEach((to, from, next) => {
+  if(to.meta.requiresAuth) {
+    const { token } = useAuthStore();
+
+    if(!token) next({ name: 'Auth'})
+    else next()
+  }
+  else next()
 })
 
 export default router
