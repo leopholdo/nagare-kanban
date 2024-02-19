@@ -8,7 +8,7 @@
     <div class="d-flex align-center pa-2 pt-3">
       <v-icon 
         v-show="option"
-        class="action-hover"
+        class="action-hover-primary"
         size="large"
         @click="option = ''">
         mdi-chevron-left
@@ -19,7 +19,7 @@
       </span>
 
       <v-icon 
-        class="action-hover ml-auto mr-1" 
+        class="action-hover-primary ml-auto mr-1" 
         style="height: 28px;"
         @click="emits('update:showDrawer', false)">
         mdi-window-close

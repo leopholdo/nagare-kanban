@@ -3,7 +3,7 @@
     <div class="d-flex text-body-1 align-center mb-5">
       <v-icon 
         size="2rem" 
-        class="action-hover" 
+        class="action-hover-primary" 
         style="margin-left: -10px"
         @click="onBack">
         mdi-chevron-left
@@ -135,7 +135,7 @@
       </span>
 
       <a
-        class="action-hover" 
+        class="action-hover-primary" 
         @click="emits('onBack')">
         Clique aqui para fazer login
       </a>
@@ -158,17 +158,21 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { useCallerStore } from '@/store/caller';
 import { useAuthStore } from '@/store/auth';
+
+import { passwordStrength } from '@/utils/passwordStrength';
 
 import { 
   required, 
   email as emailValidation 
 } from '@/utils/validations';
 
+
+// Emits
 const emits = defineEmits([
   'onBack'
 ]);
@@ -176,6 +180,7 @@ const emits = defineEmits([
 const callerStore = useCallerStore();
 const router = useRouter();
 
+// Refs
 const formEmail = ref();
 const formPassword = ref();
 const formName = ref();
@@ -189,16 +194,17 @@ const isLoading = ref({
 const errorMessage = ref("");
 
 const showPassword = ref(false);
-const passwordStrength = ref([]);
 
 const email = ref("");
 const password = ref("");
 const name = ref("");
 
+// Validations
 const nameLengthValidation = (v) => {
   return v.length <= 40 || 'O nome não deve exceder 40 caracteres.'
 }
 
+// Computeds
 const stepNumber = computed(() => {
   return `Etapa ${step.value + 1} de 3`
 });
@@ -209,35 +215,16 @@ const stepDescription = computed(() => {
   else return 'Como podemos te chamar?'
 });
 
-onMounted(() => {
-  passwordStrength.value = [
-    {
-      type: 'letter',
-      label: '1 letra',
-      valid: false,
-      validator: ((password) => { return password.match(/[a-zA-Z]+/) != null})
-    },
-    {
-      type: 'number',
-      label: '1 número',
-      valid: false,
-      validator: ((password) => { return password.match(/\d+/) != null })
-    },
-    {
-      type: 'special',
-      label: '1 caractere especial (exemplo: # ? ! &)',
-      valid: false,
-      validator: ((password) => { return password.match(/[^a-zA-Z0-9\s]/) != null })
-    },
-    {
-      type: 'character',
-      label: '10 caracteres',
-      valid: false,
-      validator: ((password) => { return password.length >= 10 })
-    }
-  ]
+// Hooks
+watch(password, () => {
+  checkPassword()
 })
 
+onMounted(() => {
+  checkPassword()
+})
+
+// Methods
 function onBack() {
   if(step.value) step.value--
   else emits('onBack')
@@ -278,15 +265,17 @@ async function onNextEmail() {
   })
 }
 
-function passwordIsValid() {
+function checkPassword() {
   // prevents whitespace
   password.value = password.value.trim()
 
-  passwordStrength.value.forEach(criteria => {
+  passwordStrength.forEach(criteria => {
     criteria.valid = criteria.validator(password.value)
   })
+}
 
-  return !passwordStrength.value.find(x => !x.valid) || 'A senha não é forte o suficiente.'
+function passwordIsValid() {
+  return !passwordStrength.find(x => !x.valid) || 'A senha não é forte o suficiente.'
 }
 
 async function onNextPassword() {

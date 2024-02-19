@@ -1,4 +1,7 @@
 export default {
+  VBtn: {
+    class: 'rounded-lg'
+  },
   IconBtn: {
     icon: true,
     size: 'small',
@@ -12,6 +15,16 @@ export default {
     color: 'default',
     density: 'comfortable',
     variant: 'text'
+  },
+  BackBtn: {
+    icon: 'mdi-arrow-left',
+    size: 'small',
+    color: 'default',
+    density: 'comfortable',
+    variant: 'text',
+    VIcon: {
+      size: 24,
+    },
   },
   VTextField: {
     density: 'comfortable',

@@ -24,10 +24,18 @@
   }
 
   .action-hover {
-    transition: color 0.1s ease-in-out;
+    transition: filter 0.1s ease;
     cursor: pointer;
   }
   .action-hover:hover {
+    filter:brightness(1.2)
+  }
+
+  .action-hover-primary {
+    transition: color 0.1s ease-in-out;
+    cursor: pointer;
+  }
+  .action-hover-primary:hover {
     color: #1FAEFF;
   }
 
@@ -35,5 +43,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .cursor-pointer {
+    cursor: pointer;
   }
 </style>

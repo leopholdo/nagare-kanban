@@ -177,11 +177,14 @@
       </v-card>
     </div>
 
-    <Card
-      :show="showCard"
-      name="Asd"
-      listName="qqq"
-    ></Card>
+    <v-fade-transition>
+      <Card
+        v-if="showCard"
+        name="Asd"
+        listName="qqq"
+        @onClose="showCard = false"
+      ></Card>
+    </v-fade-transition>
   </v-main>
 </template>
 
@@ -189,6 +192,8 @@
 import { ref, onMounted } from "vue";
 import { vOnClickOutside } from '@vueuse/components'
 import { required } from '@/utils/validations'
+
+// import { useBoardStore } from "@/store/board";
 
 import BoardListCard from "./components/BoardListCard.vue"
 import Card from "@/components/Card.vue";
@@ -201,8 +206,10 @@ const emits = defineEmits([
   'update:showDrawer'
 ])
 
+// const boardStore = useBoardStore()
+
 // #region data
-const showCard = ref(false)
+const showCard = ref(true)
 const showAddList = ref(false)
 
 const formAddCard = ref({})
@@ -218,6 +225,10 @@ const boardLists = ref([])
 // #region data
 
 onMounted(() => {
+  // boardStore.getBoards().then((response) => {
+  //   console.log(response);
+  // })
+
   // TODO - GET board lists
   let response = [
     {

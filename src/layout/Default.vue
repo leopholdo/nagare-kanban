@@ -1,5 +1,7 @@
 <template>
   <v-app>
+    <Alert/>
+    
     <app-bar></app-bar>
 
     <slot>
@@ -12,4 +14,5 @@
 
 <script setup>
   import AppBar from '@/components/AppBar.vue';
+  import Alert from '@/components/Alert.vue';
 </script>

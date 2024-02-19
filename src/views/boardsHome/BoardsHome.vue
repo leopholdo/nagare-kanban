@@ -21,7 +21,11 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 
+import { useCallerStore } from '@/store/caller';
+
 import BoardWrapper from './components/BoardWrapper.vue';
+
+const callerStore = useCallerStore();
 
 // #region data
 const newBoard = ref(false)

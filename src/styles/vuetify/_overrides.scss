@@ -1,3 +1,12 @@
+$theme-colors-name: (
+  "primary",
+  "secondary",
+  "error",
+  "info",
+  "success",
+  "warning"
+) !default;
+
 .v-card-title {
   font-size: 1rem !important;
 }
@@ -18,4 +27,54 @@
 .v-overlay__scrim {
   background: rgba(#000, 0.5) !important;
   opacity: 1 !important;
+}
+
+// Alert
+// custom icon style
+$alert-prepend-icon-font-size: 1.125rem !important;
+
+.v-alert:not(.v-alert--prominent) {
+  .v-alert__prepend {
+    padding: 0.25rem;
+    border-radius: 1rem;
+    background-color: #fff;
+
+    .v-icon {
+      block-size: $alert-prepend-icon-font-size;
+      font-size: $alert-prepend-icon-font-size;
+      inline-size: $alert-prepend-icon-font-size;
+    }
+  }
+}
+
+@each $color-name in $theme-colors-name {
+  .v-alert {
+
+    &:not(.v-alert--prominent).text-#{$color-name},
+    &:not(.v-alert--prominent).bg-#{$color-name} {
+      .v-alert__prepend {
+        border: 3px solid rgb(var(--v-theme-#{$color-name}), 0.4);
+        color: rgba(var(--v-theme-#{$color-name})) !important;
+      }
+    }
+
+    &--variant-outlined
+    {
+      background-color: rgb(var(--v-theme-on-surface-variant)) !important;
+      border: none !important;
+    }
+
+    &--variant-outlined:not(.v-alert--prominent),
+    &--variant-tonal:not(.v-alert--prominent),
+    &--variant-plain:not(.v-alert--prominent) {
+      &.bg-#{$color-name},
+      &.text-#{$color-name} {
+        .v-alert__prepend {
+          background: rgb(var(--v-theme-surface)) !important;
+          box-shadow: 0 0 0 3px rgba(var(--v-theme-#{$color-name}), 0.4);
+          color: #fff !important;
+        }
+      }
+    }
+  }
 }

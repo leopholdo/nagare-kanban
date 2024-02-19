@@ -3,39 +3,107 @@
     app 
     height="50"
     class="app-bar d-flex justify-center">
-    <div style="width:200px" class="ml-auto"></div>
 
-    <div class="d-flex justify-center align-center flex-column">
-      <b>Nagare</b>
-    </div>
+    <Logo :sm="true"></Logo>
 
-    <div class="ml-auto ma-2 user-info pa-2">
-      <div>
-        <span class="user-name">
-          {{user.name}}
-        </span>
-      </div>
+    <v-menu width="200">
+      <template v-slot:activator="{ props }">
+        <v-avatar
+          class="user-avatar"
+          color="grey darken-1 shrink"
+          size="32"
+          v-bind="props">
+          <v-img
+            v-if="user?.image"
+            :src="user.image"
+          ></v-img>
 
-      <v-avatar
-        class="user-avatar"
-        color="grey darken-1 shrink"
-        size="32">
-        <v-icon>
-          mdi-account
-        </v-icon>
-      </v-avatar>
-    </div>
+          <span v-else-if="user?.initials">
+            {{ user.initials }}
+          </span>
+
+          <v-icon v-else>
+            mdi-account
+          </v-icon>
+        </v-avatar>
+      </template>
+
+      <v-list density="compact">
+        <v-list-item 
+          :title="user.name" 
+          :subtitle="user.email">
+          <template #prepend>
+            <v-avatar
+              class="user-avatar"
+              color="grey darken-1 shrink"
+              size="32">
+              <v-img
+                v-if="user?.image"
+                :src="user.image"
+              ></v-img>
+              
+              <span v-else-if="user?.initials">
+                {{ user.initials }}
+              </span>
+
+              <v-icon v-else>
+                mdi-account
+              </v-icon>
+            </v-avatar>
+          </template>          
+        </v-list-item>
+
+        <v-divider class="my-2"/>
+
+        <v-list-item 
+          link slim 
+          prepend-icon="mdi-account"
+          title="Perfil"
+          @click="showProfile = true">
+        </v-list-item>
+
+        <v-list-item 
+          link slim 
+          prepend-icon="mdi-logout"
+          title="Logout"
+          @click="logout">
+        </v-list-item>
+      </v-list>
+    </v-menu>
   </v-app-bar>
+
+  <Account
+    v-if="showProfile"
+    v-model:show="showProfile"    
+  ></Account>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import { storeToRefs } from 'pinia';
 
-const load = ref(false)
+import { useAuthStore } from '@/store/auth';
+import { useUserStore } from '@/store/user';
+import { useRouter } from 'vue-router';
 
-const user = ref({
-  name: "User 1"
-})
+import Logo from './Logo.vue';
+import Account from './Account/Account.vue';
+
+const router = useRouter();
+const userStore = useUserStore();
+
+const { user } = storeToRefs(userStore)
+const showProfile = ref(false);
+
+function logout() {
+  const { resetAuth } = useAuthStore();
+
+  resetAuth();
+
+  router.push({
+    name: 'Auth'
+  })
+}
 </script>
 
 <style scoped lang="scss">
@@ -48,20 +116,14 @@ input {
 }
 
 .app-bar {
-  background-image: linear-gradient(90deg,#020024,#00d4ff,#020024,#00d4ff) !important;
-  background-size: 300% 100% !important;
+  background: rgba(0, 118, 184, 15%);
   color: #fff !important;
+  padding: 0 5px;
 }
 
-.user-info {
-  display: flex;
-  align-items: center;
-  width: 200px;
-  height: 80%;
-  border-radius: 5px;
-  background-color: rgb(0 0 0 / 20%);
-}
+
 .user-avatar {
+  cursor: pointer;
   margin-left: auto;
 }
 

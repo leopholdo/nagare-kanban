@@ -28,7 +28,8 @@ export default createVuetify({
           secondary: '#5CBBF6',
         },
         variables: {
-          "theme-background": '#373538',
+          // "theme-background": '#373538',
+          "theme-background": '#2a3034',
           "theme-surface": '#4C4A4D'
         }
       },
@@ -36,7 +37,8 @@ export default createVuetify({
   },
   aliases: {
     IconBtn: VBtn,
-    CloseBtn: VBtn
+    CloseBtn: VBtn,
+    BackBtn: VBtn
   },
   defaults
 })

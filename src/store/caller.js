@@ -4,20 +4,23 @@ import { ref } from 'vue';
 import axios from 'axios';
 import { useAuthStore } from './auth';
 
-export const useCallerStore = defineStore('caller', () => {
+export const useCallerStore = defineStore('caller', () => {  
   const hasError = ref(false)
 
   async function fetchData(opt) {
+
     hasError.value = false
 
     let method = opt.method ?? 'get'
     let headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json; charset=utf-8',
       'accept': '*/*'
     }
 
+    if(opt.formData) headers['Content-Type'] = 'multipart/form-data'
+
     const { token } = useAuthStore();
-    if(token) headers.Authentication = `Bearer ${token}`
+    if(token) headers.Authorization = `Bearer ${token}`
 
     return await axios({
       method: method,
