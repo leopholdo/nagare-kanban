@@ -2,133 +2,128 @@
   <div class="d-flex justify-center">
     <div class="board-wrapper">
       <span class="mx-4 wrapper-title">
-        <v-icon class="mr-1"> {{ icon }} </v-icon>
+        <v-icon 
+          size="1.5rem"
+          class="mr-1"> 
+          {{ icon }} 
+        </v-icon>
         {{ name }}
       </span>
 
-    <div class="ma-4" v-for="board in list" :key="board.name">
-      <v-hover v-slot="{ hover }">
-        <v-card hover
-          :color="board.color" 
-          height="100" width="250">
-          <div :style="{ backgroundImage: 'url(' + board.background + ')' }" class="board-image">
-            <v-card-title>{{board.name}}</v-card-title>
+      <v-fade-transition group leave-absolute>
+        <div class="ma-4" v-for="board in list" :key="board.name">
+          <v-hover>
+            <template v-slot:default="{ isHovering, props }">
+              <v-card 
+                hover
+                v-bind="props"
+                :color="board.color" 
+                height="100" width="250"
+                @click="onClickBoard(board.id)">
+                <div 
+                  :style="{ backgroundImage: 'url(' + board.backgroundImage + ')' }" 
+                  class="board-image">
+                  <v-card-title class="board-name">
+                    {{board.name}}
+                  </v-card-title>
 
-            <v-card-actions>
-              <v-slide-x-reverse-transition>
-                <v-icon 
-                  v-if="hover || board.favorite"
-                  @click="onClickFavorite(board)">>
-                  {{ board.favorite ? 'mdi-heart' : 'mdi-heart-outline' }}
-                </v-icon>
-              </v-slide-x-reverse-transition>
-            </v-card-actions>
-          </div>
-        </v-card>
-      </v-hover>              
-    </div>
-    
-    <div class="ma-4" v-if="showNewBoard">
-      <v-card hover 
-        color="#ebebeb"
-        class="new-card"
-        height="100" width="250"
-        @click="newBoard = true"
-        v-click-outside="{
-          handler: onClickOutsideNB
-        }">
-        <div v-if="newBoard" class="pa-1 d-flex include" style="width: 100%">
-          <input 
-            class="include"
-            type="text" 
-            placeholder="Digite o nome"
-            v-model="newBoardName">
-
-            <v-btn icon>
-              <v-icon color="white">mdi-check</v-icon>
-            </v-btn>
+                  <v-card-actions class="justify-end">
+                    <v-slide-x-transition>
+                      <v-icon 
+                        class="icon-star"
+                        v-if="isHovering || board.favorite"
+                        @click.stop="onClickFavorite(board)">>
+                        {{ board.favorite ? 'mdi-star' : 'mdi-star-outline' }}
+                      </v-icon>
+                    </v-slide-x-transition>
+                  </v-card-actions>
+                </div>
+              </v-card>
+            </template>
+          </v-hover>              
         </div>
+      </v-fade-transition>
+    
+      <div class="ma-4" v-if="showNewBoard">
+        <v-card hover 
+          color="#ebebeb"
+          class="new-card"
+          height="100" width="250"
+          @click="emits('onClickNew')">
 
-        <v-card-title v-else>+ Novo quadro</v-card-title>
-      </v-card>
+          <v-card-title>+ Novo quadro</v-card-title>
+        </v-card>
+      </div>
     </div>
-  </div>
   </div>
 </template>
 
-<script>
-export default {
-  name: 'BoardWrapper',
+<script setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
-  props: {
-    icon: {
-        type: String,
-        default: "mdi-grid"
-    },
-    name: String,
-    list: Array,
-    showNewBoard: {
-      type: Boolean,
-      default: true
-    }
+// Props
+const props = defineProps({
+  name: String,
+  list: Array,
+  icon: {
+    type: String,
+    default: "mdi-grid"
   },
-
-  data: () => ({
-    newBoard: false,
-    newBoardName: "",    
-  }),
-
-  methods: {
-    onClickOutsideNB() {
-      this.newBoard = false;
-    },
-    onClickFavorite(board) {
-      this.$emit('onFavorite', board)
-    }
+  showNewBoard: {
+    type: Boolean,
+    default: true
   }
-};
+})
+
+// Emits
+const emits = defineEmits([
+  'onClickBoard',
+  'onFavorite',
+  'onClickNew'
+])
+
+const router = useRouter()
+
+// Methods 
+function onClickBoard(id) {
+  emits('onClickBoard', id)
+  
+  router.push({
+    name: 'Board',
+    params: {
+      id: id
+    }
+  })
+}
+
+function onClickFavorite(board) {
+  emits('onFavorite', board)
+}
 </script>
 
 <style lang="scss" scoped>
-.board-wrapper {
-  width: 1128px;
-  display: flex;
-  flex-wrap: wrap;
-}
-
-@media screen and (max-width: 1264px) {
-  .board-wrapper{
-    width: 846px;
-  }
-}
-@media screen and (max-width: 886px) {
-  .board-wrapper{
-    width: 564px;
-  }
-}
-@media screen and (max-width: 604px) {
-  .board-wrapper *:not(.wrapper-title *){
-    width: 100% !important;
-  }
-}
-
-.v-card__actions{
-  justify-content: flex-end;
-}
-
 .wrapper-title {
   display: flex;
   align-items: center;
   flex-basis: 100%;
   font-size: 1.3rem;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .board-image {
   height: 100%;
   width: 100%;
   background-size: cover;
-  color: white
+  color: #fff
+}
+
+.board-name {
+  text-shadow: 1px 1px 5px #616161;
+}
+
+.icon-star {
+  text-shadow: 0px 0px 10px #616161;
 }
 
 .new-card {

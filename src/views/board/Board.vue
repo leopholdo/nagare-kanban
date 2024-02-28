@@ -18,6 +18,11 @@ import { ref } from 'vue';
 import BoardDrawer from './BoardDrawer.vue';
 import BoardView from './BoardView.vue';
 
+// Props
+const props = defineProps([
+  'id'
+])
+
 const showDrawer = ref(false)
 const board = ref({
   id: 1,

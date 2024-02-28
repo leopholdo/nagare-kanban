@@ -116,7 +116,8 @@ input {
 }
 
 .app-bar {
-  background: rgba(0, 118, 184, 15%);
+  // background: rgba(0, 118, 184, 15%);
+  background: #243b47;
   color: #fff !important;
   padding: 0 5px;
 }

@@ -29,7 +29,8 @@ export default {
   VTextField: {
     density: 'comfortable',
     hideDetails: 'auto',
-    rounded: 'lg'
+    rounded: 'lg',
+    variant: 'solo-filled'
   },
   // MenuBtn: {
   //   icon: 'mdi-menu',
