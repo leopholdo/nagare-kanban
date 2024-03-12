@@ -4,7 +4,9 @@
     height="50"
     class="app-bar d-flex justify-center">
 
-    <Logo :sm="true"></Logo>
+    <router-link :to="{name: 'Home'}">
+      <Logo :sm="true"></Logo>
+    </router-link>
 
     <v-menu width="200">
       <template v-slot:activator="{ props }">
@@ -107,6 +109,11 @@ function logout() {
 </script>
 
 <style scoped lang="scss">
+a {
+  text-decoration: none;
+  color: #fff;
+}
+
 .v-toolbar__content {
   width: 100%;
 }

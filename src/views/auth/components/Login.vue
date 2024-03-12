@@ -135,6 +135,8 @@ const showPassword = ref(false);
 const showInactiveAccount = ref(false);
 
 async function login() {
+  errorMessage.value = ''
+
   let response = await authStore.login(
     email.value, 
     password.value

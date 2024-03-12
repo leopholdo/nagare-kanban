@@ -18,8 +18,8 @@
     "roboto-fontface": "*",
     "vue": "^3.3.11",
     "vue-advanced-cropper": "^2.8.8",
+    "vue-draggable-plus": "^0.3.5",
     "vue-router": "^4.0.0",
-    "vuedraggable": "^4.1.0",
     "vuetify": "^3.4.7",
     "webfontloader": "^1.0.0"
   },

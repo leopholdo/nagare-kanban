@@ -34,7 +34,7 @@
           :list="boardsFavorites"
           :showNewBoard="false"
           name="Quadros favoritos"
-          icon="mdi-heart"
+          icon="mdi-star"
           class="my-4"
           @onFavorite="onFavorite"
           @onClickBoard="updateLog"

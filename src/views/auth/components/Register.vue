@@ -231,6 +231,8 @@ function onBack() {
 }
 
 async function onNextEmail() {
+  errorMessage.value = ''
+
   const { valid } = await formEmail.value.validate();
   if(!valid) return;
 
@@ -279,6 +281,8 @@ function passwordIsValid() {
 }
 
 async function onNextPassword() {
+  errorMessage.value = ''
+  
   const { valid } = await formPassword.value.validate();
   if(!valid) return;
 

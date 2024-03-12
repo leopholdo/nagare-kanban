@@ -1,5 +1,5 @@
 <template>
-  <v-card hover class="mb-2">
+  <v-card hover class="my-1">
     <v-card-title class="font-weight-normal">
       {{ props.name }}
     </v-card-title>
