@@ -106,8 +106,6 @@ async function onSubmit() {
     `target=${targetBoardList.value.id}&` +
     `top=${order.value === 'top'}`
 
-    console.log(url);
-
   await callerStore.fetchData({
     method: 'put',
     url: url

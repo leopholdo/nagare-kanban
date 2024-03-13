@@ -1,57 +1,74 @@
-# essentials
+![Logo Nagare](https://i.ibb.co/r3jmyPm/image.png)
 
-## Project setup
 
+# Nagare APP
+
+Este projeto visa criar uma ferramenta de gerenciamento de projetos, oferecendo uma plataforma flexível para organizar tarefas em quadros e listas, proporcionando uma experiência de gerenciamento de projetos intuitiva e colaborativa.
+
+
+## Aviso importante
+
+Este repositório é somente a parte do front-end do projeto. Para funcionar do modo esperado, deve-se executar também a API que se encontra neste repositório: https://github.com/leopholdo/nagare-kanban-api
+
+
+## Funcionalidades
+
+- **Registro de usuários** persistindo os dados em banco ou memória.
+- **Criptografia de password** com BCrypt.
+- **Validações de dados de usuários** em camadas diferentes.
+- **Autenticação de usuários**.
+- **Comunicação com API** de forma anônima e autenticada via Bearer token.
+- **Implementação de uma API segura** por CORS, autenticação e autorização com JWT e Bearer.
+- **Reautenticação** automática de tokens expirados.
+- **Quadros e listas dinâmicas** para gerenciar projetos e organizar tarefas em listas personalizadas.
+- **Personalização de quadros** com diferentes imagens e cores.
+- **Cartões de tarefas** com funcionalidades diversas, como adicionar descrição, comentários, etiquetas, checklists, data de entrega, entre outras coisas.
+- **Arrastar e soltar** cartões entre listas e ajustar as ordens das listas facilmente.
+- **Colaboração em equipe** com a possibilidade de atribuir membros à tarefas.
+
+
+## Tecnologias utilizada
+
+**Front-end:** VueJS, Vuetify, Pinia, Marked, Vue Draggable Plus (SortableJS) e Vue Advanced Cropper.
+
+**Back-end:** ASP.NET Core 8, Swagger UI, Entity Framework Core, BCrypt, e Authentication JwtBearer.
+
+**Banco de dados:** PostgreSQL.
+
+
+## Como usar
+
+1. **Configuração do ambiente:**
+- Clone e configure o repositório da API [que se encontra neste link](https://github.com/leopholdo/nagare-kanban-api);
+- Clone este repositório;
+- Instale as dependências necessárias:
+
+**NPM**
 ```
-# yarn
-yarn
-
-# npm
 npm install
-
-# pnpm
-pnpm install
 ```
 
-### Compiles and hot-reloads for development
-
+**YARN**
 ```
-# yarn
-yarn dev
+ yarn install
+```
 
-# npm
+3. **Execução do Projeto:**
+- Execute o projeto com o comando:
+**NPM**
+```
 npm run dev
-
-# pnpm
-pnpm dev
 ```
 
-### Compiles and minifies for production
-
+**YARN**
 ```
-# yarn
-yarn build
-
-# npm
-npm run build
-
-# pnpm
-pnpm build
+ yarn dev
 ```
+- Abra o navegador e acesse a aplicação pelo endereço http://localhost:5001
 
-### Lints and fixes files
 
-```
-# yarn
-yarn lint
+## Contribuindo
 
-# npm
-npm run lint
+Contribuições são sempre bem-vindas!
 
-# pnpm
-pnpm lint
-```
-
-### Customize configuration
-
-See [Configuration Reference](https://vitejs.dev/config/).
+Se você encontrar algum problema ou tiver sugestões, sinta-se à vontade para abrir uma [issue](https://github.com/leopholdo/nagare-kanban/issues/new) ou enviar um [pull request](https://github.com/leopholdo/nagare-kanban/pulls).
