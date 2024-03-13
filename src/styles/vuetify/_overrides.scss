@@ -33,6 +33,11 @@ $theme-colors-name: (
 // custom icon style
 $alert-prepend-icon-font-size: 1.125rem !important;
 
+.v-alert-title {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+}
+
 .v-alert:not(.v-alert--prominent) {
   .v-alert__prepend {
     padding: 0.25rem;

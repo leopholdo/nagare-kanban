@@ -32,6 +32,12 @@ export default {
     rounded: 'lg',
     variant: 'solo-filled'
   },
+  VSelect: {
+    density: 'comfortable',
+    hideDetails: 'auto',
+    rounded: 'lg',
+    variant: 'solo-filled'
+  }
   // MenuBtn: {
   //   icon: 'mdi-menu',
   //   size: 'large',

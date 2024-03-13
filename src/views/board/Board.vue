@@ -68,20 +68,32 @@
                   @keyup.enter="evt => evt.target.blur()"
                   @blur="updateList(list)"
                 >
-                <v-menu>
+                <v-menu 
+                  :close-on-content-click="!showModalDeleteList"
+                  @update:modelValue="showModalDeleteList = false">
                   <template v-slot:activator="{ props }">
                     <v-icon class="ml-auto" v-bind="props">
                       mdi-menu
                     </v-icon>
                   </template>
-                  <v-list density="compact">
-                    <v-list-item
-                      value="delete"
-                      title="Excluir lista"
-                      prepend-icon="mdi-delete"
-                      @click="deleteList(list.id)">
-                    </v-list-item>
-                  </v-list>
+
+                  <template v-slot:default>
+                    <v-list density="compact" v-if="!showModalDeleteList">
+                      <v-list-item
+                        value="delete"
+                        title="Excluir lista"
+                        prepend-icon="mdi-delete"
+                        @click="deleteList(list.id)">
+                      </v-list-item>
+                    </v-list>
+                    <ModalDeleteList
+                      v-else
+                      :boardLists="boardLists"
+                      :selectedBoardList="list"
+                      v-model:show="showModalDeleteList"
+                      @onTransferCards="onTransferCards"
+                    ></ModalDeleteList>
+                  </template>
                 </v-menu>
               </v-card-title>
 
@@ -236,6 +248,7 @@ import { VueDraggable } from 'vue-draggable-plus'
 import Loader from '@/components/Loader.vue';
 import BoardDrawer from './BoardDrawer.vue';
 import BoardListCard from "./components/BoardListCard.vue"
+import ModalDeleteList from './components/ModalDeleteList.vue';
 import Card from "@/components/Card.vue";
 
 // Props
@@ -255,6 +268,7 @@ const dragCard = ref(false)
 const showDrawer = ref(false)
 const showCard = ref(false)
 const showAddList = ref(false)
+const showModalDeleteList = ref(false)
 
 const board = ref({})
 
@@ -389,6 +403,12 @@ async function getBoardLists() {
   })
 }
 
+async function onTransferCards(payload) {
+  await getBoardLists()
+
+  payload.callback()
+}
+
 async function addList() {
   const { valid } = await formAddList.value.validate()
   if(!valid) return
@@ -408,6 +428,8 @@ async function addList() {
       isLoading.value.btnAddList = false
       return
     }
+
+    response.cards = []
 
     response.control = {
       showAddCard: false,
@@ -447,6 +469,24 @@ async function updateList(boardList) {
 }
 
 function deleteList(id) {
+  const list = boardLists.value.find(bl => bl.id == id)
+
+  if(list.cards.length) {
+    if(boardLists.value.length === 1) {
+      const { newAlert } = useAlertStore()
+      newAlert({
+        timeout: 5000,
+        type: 'warning',
+        text: 'Esvazie os cards da lista antes de excluí-la.'
+      })
+
+      return
+    }
+
+    showModalDeleteList.value = true
+    return
+  }
+
   callerStore.fetchData({
     method: 'delete',
     url: `BoardList/DeleteBoardList/${id}`,
