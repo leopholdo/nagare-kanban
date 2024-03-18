@@ -18,7 +18,7 @@
         :value="board.name"
         @blur="evt => onChangeBoard({name: evt.target.value})">
         
-      <IconBtn @click="onChangeBoard({favorite: !board.favorite})">
+      <IconBtn @click="onFavorite(board)">
         <v-icon>
           {{ board.favorite ? 'mdi-star' : 'mdi-star-outline' }}
         </v-icon>  
@@ -323,6 +323,15 @@ async function onChangeBoard(obj) {
       color: board.value.color,
       favorite: board.value.favorite
     }
+  })
+}
+
+async function onFavorite(board) {
+  board.favorite = !board.favorite
+
+  await callerStore.fetchData({
+    method: 'put',
+    url: `Board/UpdateBoardUserFavorite/${board.id}/${board.favorite}`
   })
 }
 

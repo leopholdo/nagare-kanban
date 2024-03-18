@@ -112,7 +112,9 @@ var boardsFixed = []
 onMounted(async () => {
   isLoading.value.boards = true
 
-  await getBoards(false)
+  await getFavorites()
+  
+  await getBoards()
 
   await getLog()
 
@@ -128,12 +130,30 @@ async function getBoards() {
   await callerStore.fetchData({
     url: 'Board/GetBoards?isClosed=false'
   }).then((response) => {
-    if(callerStore.hasError) return
+    if(callerStore.hasError || !response) return
+
+    response.map(x => { 
+      x.favorite = boardsFavorites.value.map(y => y.id).includes(x.id)
+
+      return x
+    })
 
     boardsFixed = response
     boards.value = response
+  })
+}
 
-    boardsFavorites.value = boards.value.filter(b => b.favorite);
+async function getFavorites() {
+  await callerStore.fetchData({
+    url: 'Board/GetUserFavorites'
+  }).then((response) => {
+    if(callerStore.hasError) return
+
+    boardsFavorites.value = response.map(x => {
+      x.favorite = true
+
+      return x
+    })
   })
 }
 
@@ -147,6 +167,12 @@ async function getLog() {
 
     boardsLogFixed = response ?? []
     boardsLog.value = boardsLogFixed
+
+    response.map(x => { 
+      x.favorite = boardsFavorites.value.map(y => y.id).includes(x.id)
+
+      return x
+    })
 
     isLoading.value.boards = false
   })
@@ -174,13 +200,22 @@ async function onFavorite(board) {
 
   await callerStore.fetchData({
     method: 'put',
-    url: 'Board/UpdateBoard',
-    data: board
+    url: `Board/UpdateBoardUserFavorite/${board.id}/${board.favorite}`
   })
-
+  
   boards.value.find(b => b.id == board.id).favorite = board.favorite;
 
-  boardsFavorites.value = boards.value.filter(b => b.favorite);
+  let log = boardsLog.value.find(b => b.id == board.id)
+  if(log) {
+    log.favorite = board.favorite;
+  }
+
+  if(board.favorite) {
+    boardsFavorites.value.unshift(board)
+  } else {
+    let index = boardsFavorites.value.findIndex(b => b.id == board.id)
+    boardsFavorites.value.splice(index, 1)
+  }
 }
 </script>
 

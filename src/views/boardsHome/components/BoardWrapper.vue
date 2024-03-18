@@ -10,7 +10,7 @@
         {{ name }}
       </span>
 
-      <v-fade-transition group leave-absolute>
+      <v-fade-transition group>
         <div class="ma-4" v-for="board in list" :key="board.name">
           <v-hover>
             <template v-slot:default="{ isHovering, props }">
