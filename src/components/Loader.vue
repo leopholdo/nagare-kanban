@@ -12,6 +12,10 @@
 </template>
 
 <style lang="scss" scoped>
+:global(html) {
+  overflow: hidden !important;
+}
+
 .overlay {
   background: rgba(0, 0, 0, 0.5) !important;
   opacity: 1 !important;
