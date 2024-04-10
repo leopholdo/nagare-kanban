@@ -11,17 +11,13 @@
   </div>
 </template>
 
-<style lang="scss" scoped>
-:global(html) {
-  overflow: hidden !important;
-}
-
+<style lang="scss">
 .overlay {
   background: rgba(0, 0, 0, 0.5) !important;
   opacity: 1 !important;
-  height: 100vh;
-  width: 100vw;
-  position: absolute;
+  height: 100%;
+  width: 100%;
+  position: fixed;
   z-index: 3500;
 }
 .loader {

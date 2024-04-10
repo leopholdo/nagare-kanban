@@ -20,7 +20,7 @@
           Plano de fundo
         </v-label>
 
-        <v-item-group v-model="background">
+        <v-item-group v-model="background" mandatory>
           <v-row dense>
             <v-col cols="auto" v-for="image in availableBackgrounds" :key="image">
               <v-item 
@@ -132,7 +132,7 @@ const isLoading = ref({
   btnSubmit: false
 })
 
-const background = ref()
+const background = ref('#5b6265')
 const boardName = ref()
 
 // Methods

@@ -117,13 +117,17 @@
                   v-if="list.control.showAddCard"
                   :id="'input-add-card-' + list.id">
                   <v-card-text>
-                    <v-form :ref="(el) => (formAddCard[list.id] = el)">
+                    <v-form 
+                      :ref="(el) => (formAddCard[list.id] = el)" 
+                      @submit.prevent="addCard(list)"
+                      @keydown.esc="list.control.showAddCard = false">
                       <v-text-field
                         hide-details
                         class="mb-3"                  
                         variant="plain"
                         placeholder="Insira o título do cartão"
                         :rules="[required]"
+                        :ref="(el) => (inputNewCardRef = el)"
                         v-model="list.control.newCardName"
                       ></v-text-field>
                     </v-form>
@@ -157,7 +161,7 @@
                 <div v-else>
                   <v-btn 
                     variant="tonal"
-                    @click="list.control.showAddCard = true">
+                    @click="handleShowAddCard(list)">
                     <v-icon>
                       mdi-plus
                     </v-icon>
@@ -177,16 +181,20 @@
         width="300" 
         :hover="!showAddList"
         style="flex-shrink: 0; height: fit-content;">
-        <v-card-text class="pb-4" @click="showAddList = true">
+        <v-card-text class="pb-4" @click="handleShowAddList">
           <div 
             v-if="showAddList" 
             v-on-click-outside="() => cancelAddList()">
-            <v-form ref="formAddList" @submit.prevent="addList">
+            <v-form 
+              ref="formAddList" 
+              @submit.prevent="addList"
+              @keydown.esc="showAddList = false">
               <v-text-field
                 density="compact"
                 bg-color="#19191cf5"
                 placeholder="Insira o nome da lista"
                 :rules="[required]"
+                :ref="(el) => (inputNewListNameRef = el)"
                 v-model="newListName"
               ></v-text-field>
 
@@ -274,6 +282,8 @@ const board = ref({})
 
 const formAddCard = ref({})
 const formAddList = ref({})
+const inputNewCardRef = ref()
+const inputNewListNameRef = ref()
 
 const newListName = ref("")
 
@@ -418,6 +428,14 @@ async function onTransferCards(payload) {
   payload.callback()
 }
 
+function handleShowAddList() {
+  showAddList.value = true
+
+  nextTick(() => {
+    inputNewListNameRef.value.focus();
+  })
+}
+
 async function addList() {
   const { valid } = await formAddList.value.validate()
   if(!valid) return
@@ -519,6 +537,14 @@ function onEndDragList(evt) {
 // #endregion BoardList
 
 // #region Card
+function handleShowAddCard(list) {
+  list.control.showAddCard = true
+
+  nextTick(() => {
+    inputNewCardRef.value.focus();
+  })
+}
+
 async function addCard(list) {  
   const { valid } = await formAddCard.value[list.id].validate()
   if(!valid) { 

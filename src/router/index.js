@@ -4,6 +4,10 @@ import { useAuthStore } from '@/store/auth'
 
 const routes = [
   {
+    path: '/',
+    redirect: '/board'
+  },
+  {
     path: '/board',
     component: () => import('@/layout/Default.vue'),
     meta: { requiresAuth: true },

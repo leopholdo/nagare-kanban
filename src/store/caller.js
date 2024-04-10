@@ -3,8 +3,11 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import axios from 'axios';
 import { useAuthStore } from './auth';
+import { useRouter } from 'vue-router';
 
 export const useCallerStore = defineStore('caller', () => {  
+  const router = useRouter();
+
   const hasError = ref(false)
 
   async function fetchData(opt) {
@@ -33,10 +36,23 @@ export const useCallerStore = defineStore('caller', () => {
     }).catch((error) => {
       hasError.value = true;
       
-      if(error.response?.data?.toString().includes('except')) 
+      if(error.response?.data?.toString().includes('except')) {
         return error.response.data
-      else 
+      }
+      else if(error.response.status === 401) {
+        const { resetAuth } = useAuthStore();
+
+        resetAuth();
+
+        router.push({
+          name: 'Auth'
+        })
+
         return
+      }
+      else {
+        return
+      }
     });
   }
 
