@@ -109,7 +109,8 @@
                   <BoardListCard                        
                     v-for="card in list.cards" 
                     :key="card.id"                        
-                    :name="card.name">
+                    :name="card.name"
+                    @click="selectedCard = card">
                   </BoardListCard>
                 </VueDraggable>
 
@@ -234,10 +235,11 @@
 
     <v-fade-transition>
       <Card
-        v-if="showCard"
-        name="Asd"
-        listName="qqq"
-        @onClose="showCard = false"
+        v-if="selectedCard != null"
+        :card="selectedCard"
+        :boardLists="boardLists"
+        @onClose="selectedCard = null"
+        @positionHasChanged="cardPositionHasChanged"
       ></Card>
     </v-fade-transition>
   </v-main>
@@ -257,7 +259,7 @@ import Loader from '@/components/Loader.vue';
 import BoardDrawer from './BoardDrawer.vue';
 import BoardListCard from "./components/BoardListCard.vue"
 import ModalDeleteList from './components/ModalDeleteList.vue';
-import Card from "@/components/Card.vue";
+import Card from "./components/Card.vue";
 
 // Props
 const props = defineProps([
@@ -293,6 +295,7 @@ const isLoading = ref({
 })
 
 const boardLists = ref([])
+const selectedCard = ref(null)
 
 // Hooks 
 onBeforeMount(async () => {
@@ -607,6 +610,17 @@ async function changeCardPosition(cardId, boardListId, position) {
       position: position
     }
   })
+}
+
+async function cardPositionHasChanged(payload) {
+  await getBoardLists()
+
+  selectedCard.value = boardLists.value
+    .map(bl => bl.cards)
+    .flat()
+    .find(c => c.id === selectedCard.value.id)
+
+  payload.callback()
 }
 // #endregion Card
 </script>

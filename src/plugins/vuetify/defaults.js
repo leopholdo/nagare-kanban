@@ -1,6 +1,7 @@
 export default {
   VBtn: {
-    class: 'rounded-lg'
+    class: 'rounded-lg',
+    rounded: 'md'
   },
   IconBtn: {
     icon: true,
@@ -26,22 +27,26 @@ export default {
       size: 24,
     },
   },
+  MenuBtn: {
+    icon: 'mdi-menu',
+    size: 'small',
+    color: 'default',
+    density: 'comfortable',
+    variant: 'text',
+    VIcon: {
+      size: 24,
+    },
+  },
   VTextField: {
     density: 'comfortable',
     hideDetails: 'auto',
-    rounded: 'lg',
+    rounded: 'md',
     variant: 'solo-filled'
   },
   VSelect: {
     density: 'comfortable',
     hideDetails: 'auto',
-    rounded: 'lg',
+    rounded: 'md',
     variant: 'solo-filled'
-  }
-  // MenuBtn: {
-  //   icon: 'mdi-menu',
-  //   size: 'large',
-  //   density: 'compact',
-  //   variant: 'text'
-  // }
+  },
 }
