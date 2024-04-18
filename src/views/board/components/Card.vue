@@ -2,12 +2,13 @@
   <div 
     class="dialog-overlay"
     :class="[{'fullscreen': !smAndUp}]" 
-    @click="emits('onClose')">
+    @click="isLoading.card ? null : emits('onClose')">
     <div @click.stop="">
       <v-card 
         class="main-card"         
-        :fullscreen="smAndUp"
         color="grey-darken-3"
+        :fullscreen="smAndUp"
+        :loading="isLoading.card"
         :width="mdAndUp ? '770px' : (smAndUp ? '600px' : '100vw')">
         <v-card-title>
           <v-row>
@@ -27,8 +28,8 @@
                 <input 
                   class="board-name-input w-100 text-h5 px-1"
                   type="text" 
-                  :value="props.card.name"
-                  @change="evt => emits('onChange', {name: evt.target.value})"
+                  v-model="name"
+                  @blur="(props.card.name != name) ? cardHasChanged() : null"
                 />
 
                 <div class="d-flex" >
@@ -118,7 +119,7 @@
                   variant="solo-filled"
                   ref="descriptionField"
                   v-model="description"
-                  @blur="showMarkdown = true"
+                  @blur="handleBlurDescription"
                 ></v-textarea>
               </div>
             </div>
@@ -141,30 +142,40 @@
 import { marked } from 'marked'
 import { ref, computed, watch, nextTick, onMounted } from 'vue';
 import { useDisplay } from 'vuetify';
+import { useCallerStore } from '@/store/caller';
 
 import CardActions from './CardActions.vue';
 import CardActionsMenu from './CardActionsMenu.vue';
 import ModalMoveCard from './ModalMoveCard.vue'
 
+// Props
 const props = defineProps([
   'card',
   'boardLists'
 ])
 
+// Emits
 const emits = defineEmits([
   'onClose',
-  'positionHasChanged'
+  'positionHasChanged',
+  'cardHasChanged'
 ])
 
+const callerStore = useCallerStore()
 const { smAndUp, mdAndUp } = useDisplay()
 
 const descriptionMarkdown = computed(() => marked(description.value))
 
+// Refs
+const isLoading = ref({
+  card: false
+})
 const showRightPanel = ref(true)
 const showMarkdown = ref(true)
 const showModalMoveCard = ref(false)
 
-const description = ref('')
+const name = ref(props.card.name)
+const description = ref(props.card.description)
 const descriptionField = ref()
 const boardList = ref()
 
@@ -178,6 +189,27 @@ watch(() => props.card.boardListId, () => {
 })
 
 // Methods
+async function cardHasChanged() {
+  isLoading.value.card = true;
+
+  await callerStore.fetchData({
+    method: 'put',
+    url: 'Card/UpdateCard',
+    data: {
+      id: props.card.id,
+      name: name.value,
+      description: description.value
+    }
+  }).then((response) => {
+
+    if(callerStore.hasError || !response) return;
+
+    emits('cardHasChanged', response)
+
+    isLoading.value.card = false;
+  })
+}
+
 function positionHasChanged(callback) {
   boardList.value = props.boardLists.find(bl => bl.id === props.card.boardListId)
 
@@ -190,6 +222,14 @@ function onClickMarkdown() {
   nextTick(() => {
     descriptionField.value.focus()
   })
+}
+
+async function handleBlurDescription() {
+  if(description.value != props.card.description) {
+    await cardHasChanged()
+  }
+
+  showMarkdown.value = true;
 }
 </script>
 
@@ -240,6 +280,7 @@ function onClickMarkdown() {
   font-size: 1.2rem;
   transition: background-color 0.2s;
   border-radius: 5px;
+  text-overflow: ellipsis;
 }
 .board-name-input:hover {
   background-color: #717171;

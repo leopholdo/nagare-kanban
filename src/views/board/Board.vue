@@ -239,6 +239,7 @@
         :card="selectedCard"
         :boardLists="boardLists"
         @onClose="selectedCard = null"
+        @cardHasChanged="cardHasChanged"
         @positionHasChanged="cardPositionHasChanged"
       ></Card>
     </v-fade-transition>
@@ -610,6 +611,14 @@ async function changeCardPosition(cardId, boardListId, position) {
       position: position
     }
   })
+}
+
+function cardHasChanged(card) {
+  const boardListIndex = boardLists.value.findIndex(bl => bl.id === card.boardListId);
+  const cardIndex = boardLists.value[boardListIndex].cards.findIndex(c => c.id === card.id);
+
+  boardLists.value[boardListIndex].cards[cardIndex] = card;
+  selectedCard.value = card;
 }
 
 async function cardPositionHasChanged(payload) {
